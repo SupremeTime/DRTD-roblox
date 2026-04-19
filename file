@@ -1,0 +1,131 @@
+local LocalPlayer = game.Players.LocalPlayer
+
+local DataObj = require(game.ReplicatedStorage.ModuleLoader.Configs.TowerLevels)
+local ConfigObj = require(game.ReplicatedStorage.ModuleLoader.Configs.TowerConfig)
+local gradients = game.ReplicatedStorage.RaritiesGradients
+local filter = 0
+
+local function SpawnButton(Name)
+	local args
+
+	args = {
+
+		Name,
+		LocalPlayer.Character.HumanoidRootPart.CFrame,
+		0
+	}
+
+	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
+end
+
+local CustomExclusive = gradients.Rare:Clone()
+CustomExclusive.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(172, 255, 48)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(106, 255, 89)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(120, 255, 194))
+})
+
+CustomExclusive.Parent = gradients
+CustomExclusive.Name = "Exclusive"
+
+local function filter(obj, ScreenGui)
+	ScreenGui.ScrollingFrame:ClearAllChildren()
+	local uiList = Instance.new("UIGridLayout")
+	
+	uiList.SortOrder = Enum.SortOrder.LayoutOrder
+	uiList.Parent = ScreenGui.ScrollingFrame
+	uiList.CellSize = UDim2.new(0.5, 0, 0.04, 0)
+	uiList.CellPadding = UDim2.new(0, 0, 0, 0)
+	local x = uiList.AbsoluteCellSize.X
+	uiList.CellSize = UDim2.new(0, x, 0, x)
+	
+	for i,v in pairs(ConfigObj.Defenders) do
+		if v.Rarity == obj then
+			local image = Instance.new("ImageLabel")
+			image.Size = UDim2.new(0.2, 0, 0.02, 0)
+			image.Image = v.Icon
+			image.Parent = ScreenGui.ScrollingFrame
+			image.BackgroundTransparency = 1
+			
+			local button = Instance.new("TextButton")
+			button.Size = UDim2.new(0.6, 0, 0.02, 0)
+			button.Position = UDim2.new(0.7, 0, 0, 0)
+			button.BackgroundColor3 = Color3.new(1, 1, 1)
+			button.Text = i
+			button.TextSize = 11
+			button.TextColor3 = Color3.new(0, 0, 0)
+			button.Parent = ScreenGui.ScrollingFrame
+			
+			local clone = gradients:FindFirstChild(obj):Clone()
+			clone.Parent = button
+			
+			button.MouseButton1Click:Connect(function()
+				SpawnButton(i)
+			end)
+		end
+	end
+end
+
+local function makeButtons(parentGui)
+	local pos = 0
+	for i,v in pairs(gradients:GetChildren()) do
+		local button = Instance.new("TextButton")
+		button.Size = UDim2.new(0, 40, 0, 40)
+		button.Position = UDim2.new(0.68, pos, 0.01, 0)
+		button.BackgroundColor3 = Color3.new(1, 1, 1)
+		button.Text = ""
+		button.Parent = parentGui
+		pos += 50
+		local clone = v:Clone()
+		clone.Parent = button
+		button.MouseButton1Click:Connect(function()
+			local filterData = v.Name
+			filter(filterData, parentGui)
+		end)
+	end
+end
+
+local function gui()
+	local ScreenGui = Instance.new("ScreenGui")
+	ScreenGui.Parent = LocalPlayer.PlayerGui
+	ScreenGui.IgnoreGuiInset = true
+	ScreenGui.ResetOnSpawn = false
+	ScreenGui.Name = "Load"
+	
+	makeButtons(ScreenGui)
+	
+	local KillButton = Instance.new("TextButton")
+	KillButton.Size = UDim2.new(0.03, 0,0, 0)
+	KillButton.Parent = ScreenGui
+	
+	local x = KillButton.AbsoluteSize.X
+	KillButton.Size = UDim2.new(0, x, 0, x)
+	KillButton.Position = UDim2.new(0.64, 0,0.03, 0)
+	KillButton.BackgroundColor3 = Color3.new(0.0509804, 0.0509804, 0.0509804)
+	KillButton.Text = "X"
+	KillButton.TextSize = 11
+	KillButton.TextColor3 = Color3.new(1, 0, 0)
+	
+	KillButton.MouseButton1Click:Connect(function()
+		ScreenGui:Destroy()
+	end)
+	
+	local list = Instance.new("ScrollingFrame")
+	list.Size = UDim2.new(0.2, 0,0.6, 0)
+	list.Position = UDim2.new(0.68, 0,0, 60)
+	list.BackgroundColor3 = Color3.new(1, 1, 1)
+	list.BackgroundTransparency = 0.5
+	list.CanvasSize = UDim2.new(0, 0,3, 0)
+	list.ScrollBarThickness = 10
+	list.Parent = ScreenGui
+	
+	local uiList = Instance.new("UIGridLayout")
+	uiList.Parent = ScreenGui.ScrollingFrame
+	uiList.SortOrder = Enum.SortOrder.LayoutOrder
+	uiList.CellPadding = UDim2.new(0, 0, 0.005, 0)
+	uiList.CellSize = UDim2.new(0.48, 0, 0.04, 0)
+	
+end
+
+print(#gradients:GetChildren())
+gui()
