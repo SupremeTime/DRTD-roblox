@@ -250,23 +250,24 @@ end)
 
 local function SpawnTower(position, unit)
 	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unit, position, 0)
+	
 end
 
 spawnButton.MouseButton1Click:Connect(function()
-	if not selectedTower then return end
+	if not selectedTower.Value then return end
 
-	SpawnTower(localPlayer.Character.HumanoidRootPart.Position - Vector3.new(0, 1, 0), selectedTower)
+	SpawnTower(localPlayer.Character.HumanoidRootPart.Position - Vector3.new(0, 1, 0), selectedTower.Value)
 end)
 
 hitButton.MouseButton1Click:Connect(function()
-	if not selectedTower then return end
+	if not selectedTower.Value then return end
 	local con
 	
 	con = mouse.Button1Down:Connect(function()
 		local hit = mouse.Hit
 		if hit then
 			local pos = hit.Position + Vector3.new(0, 1, 0)
-			SpawnTower(pos, selectedTower)
+			SpawnTower(pos, selectedTower.Value)
 			con:Disconnect()
 		end
 	end)
