@@ -244,10 +244,27 @@ closeButton.Font = Enum.Font.GothamBold
 closeButton.TextSize = 16
 closeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 closeButton.TextColor3 = Color3.new(1, 1, 1)
-Instance.new("UICorner", closeButton)
+MakeUiCorner(closeButton)
+
 closeButton.MouseButton1Click:Connect(function()
     frame.Visible = false
     openGuiButton.Visible = true
+end)
+
+-- Unit Button
+local UnitButton = Instance.new("TextButton", frame)
+UnitButton.Size = UDim2.new(0, 90, 0, 30)
+UnitButton.Position = UDim2.new(1, -130, 0, 5)
+UnitButton.Text = "Unit Toggle"
+UnitButton.Font = Enum.Font.GothamBold
+UnitButton.TextSize = 16
+UnitButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+UnitButton.TextColor3 = Color3.new(1, 1, 1)
+MakeUiCorner(UnitButton)
+
+UnitButton.MouseButton1Click:Connect(function()
+	local Manager = localPlayer.PlayerGui.Main:FindFirstChild("UnitManager")
+	Manager.Visible = not manager.Visible
 end)
 
 -- Other
