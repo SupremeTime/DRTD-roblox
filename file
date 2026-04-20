@@ -27,6 +27,7 @@ local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "CompactTowerGui"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
+screenGui.IgnoreGuiInset = true
 
 -- Main Frame
 local frame = Instance.new("Frame")
@@ -45,7 +46,7 @@ Instance.new("UIStroke", frame).Color = Color3.fromRGB(255, 94, 0)
 -- Open GUI Button
 local openGuiButton = Instance.new("TextButton")
 openGuiButton.Size = UDim2.new(0, 120, 0, 30)
-openGuiButton.Position = UDim2.new(0.5, -60, 1, -40)
+openGuiButton.Position = UDim2.new(0.7, -60, 0, 40)
 openGuiButton.AnchorPoint = Vector2.new(0.5, 1)
 openGuiButton.Text = "Open GUI"
 openGuiButton.Font = Enum.Font.GothamBold
@@ -196,34 +197,28 @@ end)
 
 spawnButton.MouseButton1Click:Connect(function()
 	if not selectedTower then return end
-	local conn
-	conn = mouse.Button1Down:Connect(function()
-		local hit = mouse.Hit
-		if hit then
-			local args
+	local args
 
-			args = {
+	args = {
+		
+		selectedTower,
+		LocalPlayer.Character.HumanoidRootPart.CFrame,
+		0
+	}
 
-				selectedTower,
-				LocalPlayer.Character.HumanoidRootPart.CFrame,
-				0
-			}
-
-			game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
-			conn:Disconnect()
-		end
-	end)
+	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
 end)
 
 local function Upgrade(tower)
-	task.wait(2)
-	
 	local nameBlock = tower:GetAttibute("OriginalName")
 	repeat
 		wait(0.1)
 		local level = tower:GetAttibute("Level")
-		print(level, DataObj[nameBlock][level + 1].Price, money.Value)
-		if money.Value >= DataObj[nameBlock][level + 1].Price then
+		local nextLevel = level + 1
+		
+		if not nextLevel then return end
+		
+		if money.Value >= DataObj[nameBlock][nextLevel].Price then
 			local args = {
 				tower
 			}
@@ -238,35 +233,28 @@ end
 
 autoupgardeButton.MouseButton1Click:Connect(function()
 	if not selectedTower then return end
-	local conn
-	conn = mouse.Button1Down:Connect(function()
-		local args
+	
+	local args
+	args = {
 
-		args = {
+		selectedTower,
+		LocalPlayer.Character.HumanoidRootPart.CFrame - Vector3.new(0, 1, 0),
+		0
+	}
 
-			selectedTower,
-			LocalPlayer.Character.HumanoidRootPart.CFrame - Vector3.new(0, 0.7, 0),
-			0
-		}
-
-		game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
-		
-		
-		local save = selectedTower
-		
-		local add
-		local tower
-		
-		if save then
-			add = game.Workspace.Defenders.ChildAdded:Connect(function(child)
-				if child.Name == save then
-					local tower = child
-					Upgrade(tower)
-					add:Disconnect()
-				end
-			end)
-		end
+	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
 			
-		conn:Disconnect()
-	end)
+	local savedTower = selectedTower
+		
+	local add
+	local tower
+		
+	if savedTower then
+		add = game.Workspace.Defenders.ChildAdded:Connect(function(child)
+			if child.Name == savedTower then
+				Upgrade(child)
+				add:Disconnect()
+			end
+		end)
+	end
 end)
