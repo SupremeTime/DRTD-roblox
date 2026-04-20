@@ -265,9 +265,9 @@ end)
 
 hitButton.MouseButton1Click:Connect(function()
 	if not selectedTower then return end
-	local hit = mouse.Hit
-	
-	if hit then
-		SpawnTower(hit.Position, selectedTower)
-	end
+	local con
+	con = mouse.Button1Down:Connect(function()
+		local pos = mouse.Hit.Position + Vector3.new(0, 1, 0)
+		SpawnTower(pos, selectedTower)
+	end)
 end)
