@@ -15,7 +15,7 @@ local DataObj = require(game.ReplicatedStorage.ModuleLoader.Configs.TowerLevels)
 local ConfigObj = require(game.ReplicatedStorage.ModuleLoader.Configs.TowerConfig)
 local gradients = game.ReplicatedStorage.RaritiesGradients
 
--- Creating Gradient
+-- Help Functions
 if not gradients:FindFirstChild("Exclusive") then
 	warn("Exclusive rarity gradient not found in RaritiesGradients folder!")
 	print("Creating Exclusive gradient")
@@ -172,7 +172,7 @@ local function FilterButtons(ParentObj, RarityFilter)
 			btn.TextSize = 15
 			btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 			btn.TextColor3 = Color3.new(0, 0, 0)
-			
+
 			btn.TextStrokeTransparency = 0
 			btn.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
 			MakeUiCorner(btn)
@@ -213,7 +213,7 @@ local counter = 0
 for id, item in pairs(gradients:GetChildren()) do
 	local button = Instance.new("TextButton", selectorRarity)
 	counter += 1
-	
+
 	button.Size = UDim2.new(1, -10, 0, 35)
 	button.Position = UDim2.new(0, 5, 0, (counter - 1) * 40 + 5)
 	button.BackgroundColor3 = Color3.new(1, 1, 1)
@@ -221,7 +221,7 @@ for id, item in pairs(gradients:GetChildren()) do
 	button.Font = Enum.Font.Gotham
 	button.TextSize = 18
 	button.TextColor3 = Color3.new(0, 0, 0)
-	
+
 	button.TextStrokeTransparency = 0
 	button.TextStrokeColor3 = Color3.new(1, 1, 1)
 	MakeUiCorner(button)
@@ -250,17 +250,17 @@ end)
 
 local function SpawnTower(pos, tower)
 	local args = {
-		selectedTower,
+		tower,
 		pos,
 		0
 	}
-	
+
 	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
 end
 
 spawnButton.MouseButton1Click:Connect(function()
 	if not selectedTower then return end
-	
+
 	SpawnTower(localPlayer.Character.HumanoidRootPart.Position - Vector3.new(0, 1, 0), selectedTower)
 end)
 
