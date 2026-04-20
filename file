@@ -216,7 +216,7 @@ spawnButton.MouseButton1Click:Connect(function()
 end)
 
 local function Upgrade(tower)
-	print(tower)
+	print(tower, tower.Humanoid)
 	
 	repeat
 		wait(0.1)
