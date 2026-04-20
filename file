@@ -1,4 +1,5 @@
 local Players = game:GetService("Players")
+local LocalPlayer = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
@@ -198,8 +199,16 @@ spawnButton.MouseButton1Click:Connect(function()
 	conn = mouse.Button1Down:Connect(function()
 		local hit = mouse.Hit
 		if hit then
-			local cf = CFrame.new(hit.Position + Vector3.new(0, 2, 0))
-			ReplicatedStorage.Functions.SpawnTower:InvokeServer(selectedTower, cf)
+			local args
+
+			args = {
+
+				selectedTower,
+				LocalPlayer.Character.HumanoidRootPart.CFrame,
+				0
+			}
+
+			game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
 			conn:Disconnect()
 		end
 	end)
@@ -216,7 +225,7 @@ autoupgardeButton.MouseButton1Click:Connect(function()
 			args = {
 
 				selectedTower,
-				hit.Position + Vector3.new(0,1.5,0),
+				LocalPlayer.Character.HumanoidRootPart.CFrame,
 				0
 			}
 
