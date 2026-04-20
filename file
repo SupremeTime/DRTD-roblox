@@ -216,8 +216,7 @@ spawnButton.MouseButton1Click:Connect(function()
 end)
 
 local function Upgrade(tower)
-	print(tower, tower.Humanoid)
-	
+	wait(1)
 	repeat
 		wait(0.1)
 		
@@ -233,6 +232,7 @@ local function Upgrade(tower)
 	print("upgrade", tower)
 	return true
 end
+
 autoupgardeButton.MouseButton1Click:Connect(function()
 	if not selectedTower then return end
 	local conn
