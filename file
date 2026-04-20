@@ -222,7 +222,7 @@ local function Upgrade(tower)
 	repeat
 		wait(0.1)
 		local level = tower:GetAttibute("Level")
-		
+		print(level, DataObj[nameBlock][level + 1].Price, money.Value)
 		if money.Value >= DataObj[nameBlock][level + 1].Price then
 			local args = {
 				tower
