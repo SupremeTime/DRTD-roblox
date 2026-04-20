@@ -219,39 +219,36 @@ autoupgardeButton.MouseButton1Click:Connect(function()
 	if not selectedTower then return end
 	local conn
 	conn = mouse.Button1Down:Connect(function()
-		local hit = mouse.Hit
-		if hit then
-			local args
+		local args
 
-			args = {
+		args = {
 
-				selectedTower,
-				LocalPlayer.Character.HumanoidRootPart.CFrame - Vector3.new(0, 0.7, 0),
-				0
-			}
+			selectedTower,
+			LocalPlayer.Character.HumanoidRootPart.CFrame - Vector3.new(0, 0.7, 0),
+			0
+		}
 
-			game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
+		game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
 			
+		local add, tower
+		add = game.Workspace.Defenders.ChildAdded:Connect(function(child)
+			if child.Name == selectedTower then
+				tower = child
+				add:Disconnect()
+			end
+		end)
 			
-			local add, tower
-			add = game.Workspace.Defenders.ChildAdded:Connect(function(child)
-				if child.Name == selectedTower then
-					tower = child
-					add:Disconnect()
-				end
-			end)
-			
-			repeat wait(0.1)
-				if money >= DataObj[tower:GetAttibute("OriginalName")][tower:GetAttibute("Level")].Price then
-					local args = {
-						tower
-					}
-					game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.UpgradeDefender:InvokeServer(unpack(args))
-				end
+		repeat wait(0.1)
+			print(tower, child)
+			if money >= DataObj[tower:GetAttibute("OriginalName")][tower:GetAttibute("Level")].Price then
+				local args = {
+					tower
+				}
+				game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.UpgradeDefender:InvokeServer(unpack(args))
+			end
 				
-			until not tower.Configuration.Upgrade
+		until not tower.Configuration.Upgrade
 			
-			conn:Disconnect()
-		end
+		conn:Disconnect()
 	end)
 end)
