@@ -95,13 +95,13 @@ end)
 
 -- Title
 local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, -40, 0, 30)
+title.Size = UDim2.new(1, -130, 0, 30)
 title.Position = UDim2.new(0, 10, 0, 5)
 title.BackgroundTransparency = 1
 title.Font = Enum.Font.GothamBold
 title.TextSize = 18
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Text = "DRTD-script v2"
+title.Text = "DRTD-script v2.2"
 
 
 -- Buttons
@@ -299,7 +299,7 @@ hitButton.MouseButton1Click:Connect(function()
 		local hit = mouse.Hit
 		if hit then
 			local pos = hit.Position
-			local CFrame = CFrame.new(pos + Vector3.new(0,1,0))
+			local CFrame = CFrame.new(pos + Vector3.new(0,1.5,0))
 			SpawnTower(CFrame, selectedTower.Value)
 			con:Disconnect()
 		end
