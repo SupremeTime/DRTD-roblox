@@ -101,7 +101,7 @@ title.BackgroundTransparency = 1
 title.Font = Enum.Font.GothamBold
 title.TextSize = 18
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Text = "DRTD-script v2.13"
+title.Text = "DRTD-script v2"
 
 
 -- Buttons
@@ -266,7 +266,9 @@ hitButton.MouseButton1Click:Connect(function()
 	con = mouse.Button1Down:Connect(function()
 		local hit = mouse.Hit
 		if hit then
-			SpawnTower(pos, selectedTower.Value)
+			local pos = hit.Position
+			local CFrame = CFrame.new(pos)
+			SpawnTower(CFrame, selectedTower.Value)
 			con:Disconnect()
 		end
 	end)
