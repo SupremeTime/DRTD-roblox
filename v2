@@ -250,7 +250,6 @@ end)
 
 local function SpawnTower(position, unit)
 	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unit, position, 0)
-	return true
 end
 
 spawnButton.MouseButton1Click:Connect(function()
