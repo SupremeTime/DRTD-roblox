@@ -5,6 +5,7 @@ local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 local mouse = player:GetMouse()
 
+local money = LocalPlayer:WaitForChild("leaderstats"):WaitForChild("Money")
 local selectedTower = nil
 
 local DataObj = require(game.ReplicatedStorage.ModuleLoader.Configs.TowerLevels)
@@ -225,11 +226,31 @@ autoupgardeButton.MouseButton1Click:Connect(function()
 			args = {
 
 				selectedTower,
-				LocalPlayer.Character.HumanoidRootPart.CFrame,
+				LocalPlayer.Character.HumanoidRootPart.CFrame - Vector3.new(0, 0.7, 0),
 				0
 			}
 
 			game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
+			
+			
+			local add, tower
+			add = game.Workspace.Defenders.ChildAdded:Connect(function(child)
+				if child.Name == selectedTower then
+					tower = child
+					add:Disconnect()
+				end
+			end)
+			
+			repeat wait(0.1)
+				if money >= DataObj[tower:GetAttibute("OriginalName")][tower:GetAttibute("Level")].Price then
+					local args = {
+						tower
+					}
+					game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.UpgradeDefender:InvokeServer(unpack(args))
+				end
+				
+			until not tower.Configuration.Upgrade
+			
 			conn:Disconnect()
 		end
 	end)
