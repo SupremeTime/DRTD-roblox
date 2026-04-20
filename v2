@@ -267,7 +267,7 @@ hitButton.MouseButton1Click:Connect(function()
 		local hit = mouse.Hit
 		if hit then
 			local pos = hit.Position
-			local CFrame = CFrame.new(pos)
+			local CFrame = CFrame.new(pos + Vector3.new(0,1,0))
 			SpawnTower(CFrame, selectedTower.Value)
 			con:Disconnect()
 		end
