@@ -266,7 +266,6 @@ hitButton.MouseButton1Click:Connect(function()
 	con = mouse.Button1Down:Connect(function()
 		local hit = mouse.Hit
 		if hit then
-			local pos = hit.Position 
 			SpawnTower(pos, selectedTower.Value)
 			con:Disconnect()
 		end
