@@ -75,12 +75,12 @@ MakeUiCorner(frame, Color3.fromRGB(255, 94, 0))
 -- Open GUI Button
 local openGuiButton = Instance.new("TextButton")
 openGuiButton.Size = UDim2.new(0, 120, 0, 30)
-openGuiButton.Position = UDim2.new(0.7, -60, 0, 40)
+openGuiButton.Position = UDim2.new(0.8, -60, 0, 40)
 openGuiButton.AnchorPoint = Vector2.new(0.5, 1)
 openGuiButton.Text = "Open GUI"
 openGuiButton.Font = Enum.Font.GothamBold
 openGuiButton.TextSize = 14
-openGuiButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+openGuiButton.BackgroundColor3 = Color3.fromRGB(0, 180, 255)
 openGuiButton.TextColor3 = Color3.new(1, 1, 1)
 Instance.new("UICorner", openGuiButton)
 openGuiButton.Parent = screenGui
@@ -119,7 +119,7 @@ local hitButton = Instance.new("TextButton", frame)
 hitButton.Size = UDim2.new(0.3, 0, 0, 30)
 hitButton.Position = UDim2.new(0.3, 20, 0, 45)
 hitButton.Text = "Hit Spawn"
-hitButton.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
+hitButton.BackgroundColor3 = Color3.fromRGB(255, 230, 0)
 hitButton.TextColor3 = Color3.new(1, 1, 1)
 hitButton.Font = Enum.Font.Gotham
 hitButton.TextSize = 14
