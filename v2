@@ -20,6 +20,7 @@ if not gradients:FindFirstChild("Exclusive") then
 	warn("Exclusive rarity gradient not found in RaritiesGradients folder!")
 	print("Creating Exclusive gradient")
 
+	gradients.Rare.Rotation = -45
 	local CustomExclusive = gradients.Rare:Clone()
 	CustomExclusive.Color = ColorSequence.new({
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(172, 255, 48)),
