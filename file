@@ -181,7 +181,7 @@ for i,v in pairs(gradients:GetChildren()) do
 	button.Text = ""
 	Instance.new("UICorner", button)
 
-	pos += 40
+	pos += 35
 	local clone = v:Clone()
 	clone.Parent = button
 	button.MouseButton1Click:Connect(function()
@@ -216,20 +216,23 @@ spawnButton.MouseButton1Click:Connect(function()
 end)
 
 local function Upgrade(tower)
-	wait(1)
+	task.wait()
+	
+	local nameBlock = tower:GetAttibute("OriginalName")
 	repeat
 		wait(0.1)
+		local level = tower:GetAttibute("Level")
 		
-		if money >= DataObj[tower:GetAttibute("OriginalName")][tower:GetAttibute("Level")].Price then
+		if money.Value >= DataObj[nameBlock][level + 1].Price then
 			local args = {
 				tower
 			}
+			
 			game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.UpgradeDefender:InvokeServer(unpack(args))
 		end
 		
 	until not tower.Configuration.Upgrade
 	
-	print("upgrade", tower)
 	return true
 end
 
