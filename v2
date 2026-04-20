@@ -248,10 +248,11 @@ selectButton.MouseButton1Click:Connect(function()
 	selectorFrame.Visible = not selectorFrame.Visible
 end)
 
-local function SpawnTower(pos, tower)
+local function SpawnTower(position, unit)
+	
 	local args = {
-		tower,
-		pos,
+		unit,
+		position,
 		0
 	}
 
@@ -267,8 +268,10 @@ end)
 hitButton.MouseButton1Click:Connect(function()
 	if not selectedTower then return end
 	local con
+	
 	con = mouse.Button1Down:Connect(function()
 		local pos = mouse.Hit.Position + Vector3.new(0, 1, 0)
 		SpawnTower(pos, selectedTower)
+		con:Disconnect()
 	end)
 end)
