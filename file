@@ -216,7 +216,7 @@ spawnButton.MouseButton1Click:Connect(function()
 end)
 
 local function Upgrade(tower)
-	task.wait()
+	task.wait(2)
 	
 	local nameBlock = tower:GetAttibute("OriginalName")
 	repeat
