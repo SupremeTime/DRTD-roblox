@@ -1,22 +1,14 @@
-local LocalPlayer = game.Players.LocalPlayer
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+local player = Players.LocalPlayer
+local mouse = player:GetMouse()
+
+local selectedTower = nil
 
 local DataObj = require(game.ReplicatedStorage.ModuleLoader.Configs.TowerLevels)
 local ConfigObj = require(game.ReplicatedStorage.ModuleLoader.Configs.TowerConfig)
 local gradients = game.ReplicatedStorage.RaritiesGradients
-local filter = 0
-
-local function SpawnButton(Name)
-	local args
-
-	args = {
-
-		Name,
-		LocalPlayer.Character.HumanoidRootPart.CFrame,
-		0
-	}
-
-	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
-end
 
 local CustomExclusive = gradients.Rare:Clone()
 CustomExclusive.Color = ColorSequence.new({
@@ -28,104 +20,208 @@ CustomExclusive.Color = ColorSequence.new({
 CustomExclusive.Parent = gradients
 CustomExclusive.Name = "Exclusive"
 
-local function filter(obj, ScreenGui)
-	ScreenGui.ScrollingFrame:ClearAllChildren()
-	local uiList = Instance.new("UIGridLayout")
+-- GUI Container
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CompactTowerGui"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Main Frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 280, 0, 370)
+frame.Position = UDim2.new(0.5, -140, 1.2, 0)
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+frame.Active = true
+frame.Draggable = true
+frame.Visible = false
+frame.Parent = screenGui
+
+Instance.new("UICorner", frame)
+Instance.new("UIStroke", frame).Color = Color3.fromRGB(255, 94, 0)
+
+-- Open GUI Button
+local openGuiButton = Instance.new("TextButton")
+openGuiButton.Size = UDim2.new(0, 120, 0, 30)
+openGuiButton.Position = UDim2.new(0.5, -60, 1, -40)
+openGuiButton.AnchorPoint = Vector2.new(0.5, 1)
+openGuiButton.Text = "Open GUI"
+openGuiButton.Font = Enum.Font.GothamBold
+openGuiButton.TextSize = 14
+openGuiButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+openGuiButton.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", openGuiButton)
+openGuiButton.Parent = screenGui
+
+openGuiButton.MouseButton1Click:Connect(function()
+	frame.Visible = true
+	openGuiButton.Visible = false
+	TweenService:Create(frame, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Position = UDim2.new(0.5, -140, 0.5, -140)
+	}):Play()
+end)
+
+local function filter(parentObj, rarity)
+	parentObj:ClearAllChildren()
+	Instance.new("UICorner", parentObj)
 	
-	uiList.SortOrder = Enum.SortOrder.LayoutOrder
-	uiList.Parent = ScreenGui.ScrollingFrame
-	uiList.CellSize = UDim2.new(0.5, 0, 0.04, 0)
-	uiList.CellPadding = UDim2.new(0, 0, 0, 0)
-	local x = uiList.AbsoluteCellSize.X
-	uiList.CellSize = UDim2.new(0, x, 0, x)
-	
-	for i,v in pairs(ConfigObj.Defenders) do
-		if v.Rarity == obj then
-			local image = Instance.new("ImageLabel")
-			image.Size = UDim2.new(0.2, 0, 0.02, 0)
-			image.Image = v.Icon
-			image.Parent = ScreenGui.ScrollingFrame
-			image.BackgroundTransparency = 1
+	local c = 0
+	for name, list in pairs(ConfigObj.Defenders) do
+		if list.Rarity == rarity then
+			c += 1
+			local btn = Instance.new("TextButton", parentObj)
+			btn.Size = UDim2.new(1, -10, 0, 35)
+			btn.Position = UDim2.new(0, 5, 0, (c - 1) * 40)
+			btn.Text = string.format("%s - %s$", name, DataObj[name][1].Price)
+			btn.Font = Enum.Font.Gotham
+			btn.TextSize = 15
+			btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+			btn.TextColor3 = Color3.new(0.760784, 0.760784, 0.760784)
+			Instance.new("UICorner", btn)
 			
-			local button = Instance.new("TextButton")
-			button.Size = UDim2.new(0.6, 0, 0.02, 0)
-			button.Position = UDim2.new(0.7, 0, 0, 0)
-			button.BackgroundColor3 = Color3.new(1, 1, 1)
-			button.Text = i
-			button.TextSize = 11
-			button.TextColor3 = Color3.new(0, 0, 0)
-			button.Parent = ScreenGui.ScrollingFrame
+			local clone = gradients:FindFirstChild(rarity):Clone()
+			clone.Parent = btn
 			
-			local clone = gradients:FindFirstChild(obj):Clone()
-			clone.Parent = button
-			
-			button.MouseButton1Click:Connect(function()
-				SpawnButton(i)
+			btn.MouseButton1Click:Connect(function()
+				selectedTower = name
+				parentObj.Parent.NameLabel.Text = name
 			end)
 		end
 	end
+	parentObj.CanvasSize = UDim2.new(0, 0, 0, 40 * c)
 end
+-- Close Button
+local closeButton = Instance.new("TextButton", frame)
+closeButton.Size = UDim2.new(0, 30, 0, 30) 
+closeButton.Text = "X"
+closeButton.Font = Enum.Font.GothamBold
+closeButton.TextSize = 16
+closeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+closeButton.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", closeButton)
+closeButton.MouseButton1Click:Connect(function()
+	frame.Visible = false
+	openGuiButton.Visible = true
+end)
 
-local function makeButtons(parentGui)
-	local pos = 0
-	for i,v in pairs(gradients:GetChildren()) do
-		local button = Instance.new("TextButton")
-		button.Size = UDim2.new(0, 40, 0, 40)
-		button.Position = UDim2.new(0.68, pos, 0.01, 0)
-		button.BackgroundColor3 = Color3.new(1, 1, 1)
-		button.Text = ""
-		button.Parent = parentGui
-		pos += 50
-		local clone = v:Clone()
-		clone.Parent = button
-		button.MouseButton1Click:Connect(function()
-			local filterData = v.Name
-			filter(filterData, parentGui)
-		end)
-	end
+-- Title
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, -40, 0, 30)
+title.Position = UDim2.new(0, 10, 0, 5)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Text = "DRTD-script v2"
+
+-- Buttons
+local spawnButton = Instance.new("TextButton", frame)
+spawnButton.Size = UDim2.new(0.48, -5, 0, 30)
+spawnButton.Position = UDim2.new(0, 10, 0, 45)
+spawnButton.Text = "Spawn Tower"
+spawnButton.BackgroundColor3 = Color3.fromRGB(0, 170, 80)
+spawnButton.TextColor3 = Color3.new(1, 1, 1)
+spawnButton.Font = Enum.Font.Gotham
+spawnButton.TextSize = 14
+Instance.new("UICorner", spawnButton)
+
+local selectButton = Instance.new("TextButton", frame)
+selectButton.Size = UDim2.new(0.48, -10, 0, 30)
+selectButton.Position = UDim2.new(0.55, 0, 0, 45)
+selectButton.Text = "Select Tower"
+selectButton.BackgroundColor3 = Color3.fromRGB(150, 20, 240)
+selectButton.TextColor3 = Color3.new(1, 1, 1)
+selectButton.Font = Enum.Font.Gotham
+selectButton.TextSize = 14
+Instance.new("UICorner", selectButton)
+
+-- Selector
+local selectorFrame = Instance.new("ScrollingFrame", frame)
+selectorFrame.Size = UDim2.new(1, -20, 0, 35 * 6)
+selectorFrame.Position = UDim2.new(0, 10, 0, 155)
+selectorFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+selectorFrame.CanvasSize = UDim2.new(0, 0, 0, 10000)
+selectorFrame.ScrollBarThickness = 6
+selectorFrame.Visible = false
+Instance.new("UICorner", selectorFrame)
+
+local count = 0
+for name, list in pairs(DataObj) do
+	count += 1
 end
+selectorFrame.CanvasSize = UDim2.new(0, 0, 0, 40 * count)
 
-local function gui()
-	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Parent = LocalPlayer.PlayerGui
-	ScreenGui.IgnoreGuiInset = true
-	ScreenGui.ResetOnSpawn = false
-	ScreenGui.Name = "Load"
-	
-	makeButtons(ScreenGui)
-	
-	local KillButton = Instance.new("TextButton")
-	KillButton.Size = UDim2.new(0.03, 0,0, 0)
-	KillButton.Parent = ScreenGui
-	
-	local x = KillButton.AbsoluteSize.X
-	KillButton.Size = UDim2.new(0, x, 0, x)
-	KillButton.Position = UDim2.new(0.64, 0,0.03, 0)
-	KillButton.BackgroundColor3 = Color3.new(0.0509804, 0.0509804, 0.0509804)
-	KillButton.Text = "X"
-	KillButton.TextSize = 11
-	KillButton.TextColor3 = Color3.new(1, 0, 0)
-	
-	KillButton.MouseButton1Click:Connect(function()
-		ScreenGui:Destroy()
+local autoupgardeButton = Instance.new("TextButton", frame)
+autoupgardeButton.Size = UDim2.new(0.48, -5, 0, 30)
+autoupgardeButton.Position = UDim2.new(0, 10, 0, 80)
+autoupgardeButton.Text = "Auto Upgrade"
+autoupgardeButton.BackgroundColor3 = Color3.fromRGB(200, 255, 0)
+Instance.new("UICorner", autoupgardeButton)
+
+
+local NameLabel = Instance.new("TextLabel", frame)
+NameLabel.Size = UDim2.new(0.48, -10, 0, 30)
+NameLabel.Position = UDim2.new(0.55, 0, 0, 80)
+NameLabel.Text = "NIL"
+NameLabel.TextSize = 13
+NameLabel.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+NameLabel.TextColor3 = Color3.new(1, 1, 1)
+NameLabel.Font = Enum.Font.GothamBold
+NameLabel.Name = "NameLabel"
+Instance.new("UICorner", NameLabel)
+
+local pos = 10
+for i,v in pairs(gradients:GetChildren()) do
+	local button = Instance.new("TextButton", frame)
+	button.Size = UDim2.new(0, 30, 0, 30)
+	button.Position = UDim2.new(0, pos, 0, 115)
+	button.BackgroundColor3 = Color3.new(1, 1, 1)
+	button.Text = ""
+	Instance.new("UICorner", button)
+
+	pos += 40
+	local clone = v:Clone()
+	clone.Parent = button
+	button.MouseButton1Click:Connect(function()
+		local filterData = v.Name
+		filter(selectorFrame, filterData)
 	end)
-	
-	local list = Instance.new("ScrollingFrame")
-	list.Size = UDim2.new(0.2, 0,0.6, 0)
-	list.Position = UDim2.new(0.68, 0,0, 60)
-	list.BackgroundColor3 = Color3.new(1, 1, 1)
-	list.BackgroundTransparency = 0.5
-	list.CanvasSize = UDim2.new(0, 0,3, 0)
-	list.ScrollBarThickness = 10
-	list.Parent = ScreenGui
-	
-	local uiList = Instance.new("UIGridLayout")
-	uiList.Parent = ScreenGui.ScrollingFrame
-	uiList.SortOrder = Enum.SortOrder.LayoutOrder
-	uiList.CellPadding = UDim2.new(0, 0, 0.005, 0)
-	uiList.CellSize = UDim2.new(0.48, 0, 0.04, 0)
-	
 end
 
-print(#gradients:GetChildren())
-gui()
+selectButton.MouseButton1Click:Connect(function()
+	selectorFrame.Visible = not selectorFrame.Visible
+end)
+
+spawnButton.MouseButton1Click:Connect(function()
+	if not selectedTower then return end
+	local conn
+	conn = mouse.Button1Down:Connect(function()
+		local hit = mouse.Hit
+		if hit then
+			local cf = CFrame.new(hit.Position + Vector3.new(0, 2, 0))
+			ReplicatedStorage.Functions.SpawnTower:InvokeServer(selectedTower, cf)
+			conn:Disconnect()
+		end
+	end)
+end)
+
+autoupgardeButton.MouseButton1Click:Connect(function()
+	if not selectedTower then return end
+	local conn
+	conn = mouse.Button1Down:Connect(function()
+		local hit = mouse.Hit
+		if hit then
+			local args
+
+			args = {
+
+				selectedTower,
+				hit.Position + Vector3.new(0,1.5,0),
+				0
+			}
+
+			game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unpack(args))
+			conn:Disconnect()
+		end
+	end)
+end)
