@@ -105,9 +105,13 @@ title.Text = "DRTD-script v2.2"
 
 -- Buttons & func & ButtonsScrollingFrame
 local function SpawnTower(position, unit)
-	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unit, position, 0)
-	
+	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unit, position, 0)	
 end
+
+local SelectorButtons = instance.new("ScrollingFrame", frame)
+SelectorButtons.Size = UDim2.new(1, -20, 0, 30)
+SelectorButtons.Position = UDim2.new(0, 10, 0, 45)
+SelectorButtons.BackgroundColor3 = Color.fromRGB(50, 50, 50)
 
 local function buttonsCreate(instance, list, func)
 	if not instance or not func then return end
