@@ -143,26 +143,40 @@ buttonsCreate(Instance.new("TextButton", SelectorButtons), {
 	SpawnTower(localPlayer.Character.HumanoidRootPart.CFrame, selectedTower.Value)
 end)
 
-local hitButton = Instance.new("TextButton", frame)
-hitButton.Size = UDim2.new(0.3, 0, 0, 30)
-hitButton.Position = UDim2.new(0.3, 20, 0, 45)
-hitButton.Text = "Hit Spawn"
-hitButton.BackgroundColor3 = Color3.fromRGB(255, 10, 0)
-hitButton.TextColor3 = Color3.new(1, 1, 1)
-hitButton.Font = Enum.Font.Gotham
-hitButton.TextSize = 14
-MakeUiCorner(hitButton)
+buttonsCreate(Instance.new("TextButton", frame), {
+	Size = UDim2.new(0.3, 0, 0, 30),
+	Position = UDim2.new(0.3, 20, 0, 45),
+	Text = "Hit Spawn",
+	BackgroundColor3 = Color3.fromRGB(255, 10, 0),
+	TextColor3 = Color3.new(1, 1, 1),
+	Font = Enum.Font.Gotham,
+	TextSize = 14
+}, function()
+	if not selectedTower.Value then return end
+	local con
+	
+	con = mouse.Button1Down:Connect(function()
+		local hit = mouse.Hit
+		if hit then
+			local pos = hit.Position
+			local CFrame = CFrame.new(pos + Vector3.new(0,1.5,0))
+			SpawnTower(CFrame, selectedTower.Value)
+			con:Disconnect()
+		end
+	end)
+end)
 
-local selectButton = Instance.new("TextButton", frame)
-selectButton.Size = UDim2.new(0.4, -40, 0, 30)
-selectButton.Position = UDim2.new(0.6, 30, 0, 45)
-selectButton.Text = "Select Tower"
-selectButton.BackgroundColor3 = Color3.fromRGB(150, 20, 240)
-selectButton.TextColor3 = Color3.new(1, 1, 1)
-selectButton.Font = Enum.Font.Gotham
-selectButton.TextSize = 14
-MakeUiCorner(selectButton)
-
+buttonsCreate(Instance.new("TextButton", frame), {
+	Size = UDim2.new(0.4, -40, 0, 30),
+	Position = UDim2.new(0.6, 30, 0, 45),
+	Text = "Select Tower",
+	BackgroundColor3 = Color3.fromRGB(150, 20, 240),
+	TextColor3 = Color3.new(1, 1, 1),
+	Font = Enum.Font.Gotham,
+	TextSize = 14
+}, function()
+	selectorFrame.Visible = not selectorFrame.Visible
+end)
 
 -- Name Label
 local nameLabel = Instance.new("TextLabel", frame)
@@ -301,24 +315,3 @@ for name, list in pairs(DataObj) do
 end
 
 selectorFrame.CanvasSize = UDim2.new(0, 0, 0, 40 * count + 5)
-
--- Functions
-selectButton.MouseButton1Click:Connect(function()
-	selectorFrame.Visible = not selectorFrame.Visible
-end)
-
-
-hitButton.MouseButton1Click:Connect(function()
-	if not selectedTower.Value then return end
-	local con
-	
-	con = mouse.Button1Down:Connect(function()
-		local hit = mouse.Hit
-		if hit then
-			local pos = hit.Position
-			local CFrame = CFrame.new(pos + Vector3.new(0,1.5,0))
-			SpawnTower(CFrame, selectedTower.Value)
-			con:Disconnect()
-		end
-	end)
-end)
