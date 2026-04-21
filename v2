@@ -103,46 +103,46 @@ title.TextSize = 18
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Text = "DRTD-script v2.2"
 
--- Buttons
+-- Buttons & func & ButtonsScrollingFrame
+local function SpawnTower(position, unit)
+	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unit, position, 0)
+	
+end
 
 local function buttonsCreate(instance, list, func)
 	if not instance or not func then return end
-
 	for name, obj in list do
 		instance[name] = obj
 	end
 
-	instance.MouseButton1Click:Connect(local function(args)
+	instance.MouseButton1Click:Connect(function(args)
 		func()
-	end
+	end)
 
+	MakeUiCorner(spawnButton)
 	return instance
 end
 
-local spawnButton2 = buttonsCreate(Instance.new("TextButton"), {
-	Parent = frame
+buttonsCreate(Instance.new("TextButton"), {
+	Parent = frame,
 	Size = UDim2.new(0.3, 0, 0, 30),
 	Position = UDim2.new(0, 10, 0, 45),
 	Text = "Spawn Tower",
 	BackgroundColor3 = Color3.fromRGB(0, 170, 80),
 	TextColor3 = Color3.new(1, 1, 1),
 	Font = Enum.Font.Gotham,
-	TestSize = 14	
-}, local function main()
+	TextSize = 14	
+}, function()
 	if not selectedTower.Value then return end
 
 	SpawnTower(localPlayer.Character.HumanoidRootPart.CFrame, selectedTower.Value)
 end)
 
---local spawnButton = Instance.new("TextButton", frame)
---spawnButton.Size = UDim2.new(0.3, 0, 0, 30)
---spawnButton.Position = UDim2.new(0, 10, 0, 45)
---spawnButton.Text = "Spawn Tower"
---spawnButton.BackgroundColor3 = Color3.fromRGB(0, 170, 80)
---spawnButton.TextColor3 = Color3.new(1, 1, 1)
---spawnButton.Font = Enum.Font.Gotham
---spawnButton.TextSize = 14
---MakeUiCorner(spawnButton)
+buttonsCreate(Instance.new("TextButton"), {
+	
+
+
+
 
 local hitButton = Instance.new("TextButton", frame)
 hitButton.Size = UDim2.new(0.3, 0, 0, 30)
@@ -308,16 +308,6 @@ selectButton.MouseButton1Click:Connect(function()
 	selectorFrame.Visible = not selectorFrame.Visible
 end)
 
-local function SpawnTower(position, unit)
-	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unit, position, 0)
-	
-end
-
-spawnButton.MouseButton1Click:Connect(function()
-	if not selectedTower.Value then return end
-
-	SpawnTower(localPlayer.Character.HumanoidRootPart.CFrame, selectedTower.Value)
-end)
 
 hitButton.MouseButton1Click:Connect(function()
 	if not selectedTower.Value then return end
