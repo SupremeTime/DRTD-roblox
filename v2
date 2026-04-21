@@ -108,10 +108,12 @@ local function SpawnTower(position, unit)
 	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unit, position, 0)	
 end
 
-local SelectorButtons = instance.new("ScrollingFrame", frame)
+local SelectorButtons = Instance.new("ScrollingFrame", frame)
 SelectorButtons.Size = UDim2.new(1, -20, 0, 30)
 SelectorButtons.Position = UDim2.new(0, 10, 0, 45)
-SelectorButtons.BackgroundColor3 = Color.fromRGB(50, 50, 50)
+SelectorButtons.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+SelectorButtons.CanvasSize = UDim2.new(0, 10000, 0, 0)
+SelectorButtons.ScrollBarThickness = 0
 
 local function buttonsCreate(instance, list, func)
 	if not instance or not func then return end
@@ -123,14 +125,13 @@ local function buttonsCreate(instance, list, func)
 		func()
 	end)
 
-	MakeUiCorner(spawnButton)
+	MakeUiCorner(instance)
 	return instance
 end
 
-buttonsCreate(Instance.new("TextButton"), {
-	Parent = frame,
-	Size = UDim2.new(0.3, 0, 0, 30),
-	Position = UDim2.new(0, 10, 0, 45),
+buttonsCreate(Instance.new("TextButton", SelectorButtons), {
+	Size = UDim2.new(0, 90, 0, 20),
+	Position = UDim2.new(0, 5, 0, 5),
 	Text = "Spawn Tower",
 	BackgroundColor3 = Color3.fromRGB(0, 170, 80),
 	TextColor3 = Color3.new(1, 1, 1),
@@ -141,12 +142,6 @@ buttonsCreate(Instance.new("TextButton"), {
 
 	SpawnTower(localPlayer.Character.HumanoidRootPart.CFrame, selectedTower.Value)
 end)
-
-buttonsCreate(Instance.new("TextButton"), {
-	
-
-
-
 
 local hitButton = Instance.new("TextButton", frame)
 hitButton.Size = UDim2.new(0.3, 0, 0, 30)
