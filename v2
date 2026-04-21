@@ -139,7 +139,7 @@ MakeUiCorner(selectButton)
 
 -- Name Label
 local nameLabel = Instance.new("TextLabel", frame)
-nameLabel.Size = UDim2.new(1, -10, 0, 30)
+nameLabel.Size = UDim2.new(1, -20, 0, 30)
 nameLabel.Position = UDim2.new(0, 10, 0, 80)
 nameLabel.Text = "Name Label"
 nameLabel.TextSize = 13
