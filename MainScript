@@ -18,7 +18,7 @@ local gradients = game.ReplicatedStorage.RaritiesGradients
 -- Help Functions
 if not gradients:FindFirstChild("Exclusive") then
 	warn("Exclusive rarity gradient not found in RaritiesGradients folder!")
-	print("Creating Exclusive gradient")
+	print("Creating Exclusive gradient") -- hi :3
 
 	gradients.Rare.Rotation = -45
 	local CustomExclusive = gradients.Rare:Clone()
@@ -95,13 +95,13 @@ end)
 
 -- Title
 local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, -45, 0, 30)
+title.Size = UDim2.new(1, -55, 0, 30)
 title.Position = UDim2.new(0, 10, 0, 5)
 title.BackgroundTransparency = 1
 title.Font = Enum.Font.GothamBold
 title.TextSize = 18
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Text = "DRTD-script v2.3"
+title.Text = "Dead Rails TD 1.2.4"
 
 -- Units
 local global = 35 * 6 
@@ -126,7 +126,7 @@ local SelectorButtons = Instance.new("ScrollingFrame", frame)
 SelectorButtons.Size = UDim2.new(1, -20, 0, 30)
 SelectorButtons.Position = UDim2.new(0, 10, 0, 45)
 SelectorButtons.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-SelectorButtons.CanvasSize = UDim2.new(0, 10000, 0, 0)
+SelectorButtons.CanvasSize = UDim2.new(0, 390, 0, 0)
 SelectorButtons.ElasticBehavior = Enum.ElasticBehavior.Never
 SelectorButtons.ScrollingDirection = Enum.ScrollingDirection.X
 SelectorButtons.ScrollBarThickness = 0
@@ -241,15 +241,22 @@ local function FilterButtons(ParentObj, RarityFilter)
 			local price = DataObj[name][1].Price
       local ypos = (counter - 1) * 40 + 5
 
-      local image = Instance.new("ImageLabel", ParentObj)
-      image.Size = UDim2.new(0, 35, 0, 35)
-      image.Position = UDim2.new(0, 5, 0, ypos)
-      image.Image = ConfigObj[name].Icon
-      image.BackgroundColor3 = Color3.new(40, 40, 40)
-      image.ImageTransparency = 0.4
+      local FrameForImage = Instance.new("Frame", ParentObj)
+      FrameForImage.Size = UDim2.new(0, 35, 0, 35)
+      FrameForImage.Position = UDim2.new(0, 5, 0, ypos)
 
-      local clone = gradients:FindFirstChild(RarityFilter):Clone()
-			clone.Parent = image
+			FrameForImage.BackgroundColor3 = Color3.new(40, 40, 40)
+			local clone = gradients:FindFirstChild(RarityFilter):Clone()
+			clone.Parent = FrameForImage
+			MakeUiCorner(FrameForImage)
+
+			local image = Instance.new("ImageLabel", FrameForImage)
+			image.Size = UDim2.new(1, 0, 1, 0)
+			image.Position = UDim2.new(0, 0, 0, 0)
+      image.Image = ConfigObj.Defenders[name].Icon
+      image.BackgroundTransparency = 1
+			image.ImageTransparency = 0
+			MakeUiCorner(image)
 
       local btn = Instance.new("TextButton", ParentObj)
 			btn.Size = UDim2.new(0, 165, 0, 35)
