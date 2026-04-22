@@ -1,4 +1,4 @@
 if not _G.DRTD then
-  loadstring(game:HttpGet("https://raw.githubusercontent.com/SupremeTime/DRTD-roblox/refs/heads/Super/MainScript"))()
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/SupremeTime/DRTD-roblox/refs/heads/Super/MainScript.lua"))()
   _G.DRTD = true
 end
