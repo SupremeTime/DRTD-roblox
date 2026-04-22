@@ -1,1 +1,4 @@
---No Context added
+if not _G.DRTD then
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/SupremeTime/DRTD-roblox/refs/heads/Super/MainScript"))()
+  _G.DRTD = true
+end
