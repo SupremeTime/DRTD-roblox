@@ -62,7 +62,7 @@ screenGui.IgnoreGuiInset = true
 
 -- Main Frame
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 290, 0, 300)
+frame.Size = UDim2.new(0, 65, 0, 300)
 frame.Position = UDim2.new(0.5, -140, 1.2, 0)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
@@ -106,9 +106,20 @@ title.Text = "Dead Rails TD 1.2.4"
 -- Units
 local global = 35 * 6 
 
-local selectorFrame = Instance.new("ScrollingFrame", frame)
-selectorFrame.Size = UDim2.new(0, 220, 0, global - 35)
-selectorFrame.Position = UDim2.new(0, 60, 0, 115)
+local frame2 = Instance.new("Frame")
+frame2.Size = UDim2.new(0, 240, 0, 230)
+frame2.Position = UDim2.new(0.5, -140, 1.2, 0)
+frame2.AnchorPoint = Vector2.new(0.5, 0.5)
+frame2.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+frame2.Active = true
+frame2.Draggable = true
+frame2.Visible = true
+frame2.Parent = ScreenGui
+MakeUiCorner(frame2)
+
+local selectorFrame = Instance.new("ScrollingFrame", frame2)
+selectorFrame.Size = UDim2.new(0, 220, 0, global)
+selectorFrame.Position = UDim2.new(0, 10, 0, 10)
 selectorFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 selectorFrame.CanvasSize = UDim2.new(0, 0, 0, 10000)
 selectorFrame.ScrollBarThickness = 0
@@ -192,6 +203,9 @@ buttonsCreate(Instance.new("TextButton", SelectorButtons), {
 	Font = Enum.Font.Gotham,
 	TextSize = 14
 }, function()
+	TweenService:Create(frame2, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Position = UDim2.new(0, frame.Position.X.Offset + 75, 0, frame.Position.Y.Offset)
+	}):Play()
 	selectorFrame.Visible = not selectorFrame.Visible
 end)
 
@@ -211,8 +225,8 @@ end)
 
 -- Name Label
 local nameLabel = Instance.new("TextLabel", frame)
-nameLabel.Size = UDim2.new(0, 220, 0, 30)
-nameLabel.Position = UDim2.new(0, 60, 0, 80)
+nameLabel.Size = UDim2.new(1, -10, 0, 30)
+nameLabel.Position = UDim2.new(0, 10, 0, 80)
 nameLabel.Text = "No unit"
 nameLabel.TextSize = 15
 nameLabel.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
@@ -239,11 +253,11 @@ local function FilterButtons(ParentObj, RarityFilter)
 			counter += 1
 
 			local price = DataObj[name][1].Price
-      local ypos = (counter - 1) * 40 + 5
+			local ypos = (counter - 1) * 40 + 5
 
-      local FrameForImage = Instance.new("Frame", ParentObj)
-      FrameForImage.Size = UDim2.new(0, 35, 0, 35)
-      FrameForImage.Position = UDim2.new(0, 5, 0, ypos)
+    		local FrameForImage = Instance.new("Frame", ParentObj)
+   			FrameForImage.Size = UDim2.new(0, 35, 0, 35)
+    		FrameForImage.Position = UDim2.new(0, 5, 0, ypos)
 
 			FrameForImage.BackgroundColor3 = Color3.new(40, 40, 40)
 			local clone = gradients:FindFirstChild(RarityFilter):Clone()
@@ -253,12 +267,12 @@ local function FilterButtons(ParentObj, RarityFilter)
 			local image = Instance.new("ImageLabel", FrameForImage)
 			image.Size = UDim2.new(1, 0, 1, 0)
 			image.Position = UDim2.new(0, 0, 0, 0)
-      image.Image = ConfigObj.Defenders[name].Icon
-      image.BackgroundTransparency = 1
+    	  	image.Image = ConfigObj.Defenders[name].Icon
+ 		    image.BackgroundTransparency = 1
 			image.ImageTransparency = 0
 			MakeUiCorner(image)
 
-      local btn = Instance.new("TextButton", ParentObj)
+      		local btn = Instance.new("TextButton", ParentObj)
 			btn.Size = UDim2.new(0, 165, 0, 35)
 			btn.Position = UDim2.new(0, 45, 0, ypos)
 			btn.Text = string.format("%s - %s$", name, price)
