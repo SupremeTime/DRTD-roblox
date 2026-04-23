@@ -259,7 +259,7 @@ local function PlaceHitSpawn(unitName)
 		if currentPreview and validPlacement then
 
 			confirm = mouse.Button1Down:Connect(function()
-				if currentPreview and validPlacement	
+				if currentPreview and validPlacement then
 					local pos = currentPreview.PrimaryPart.CFrame
 					SpawnTower(pos, unitName)
 
@@ -275,7 +275,7 @@ local function PlaceHitSpawn(unitName)
 			end)
 		wait(1)
 
-		confirm:Disconnect
+		confirm:Disconnect()
 		end
 	end)
 
@@ -456,7 +456,7 @@ local function FilterButtons(ParentObj, RarityFilter)
 				local GradientClone = gradients:FindFirstChild(RarityFilter):Clone()
 				GradientClone.Parent = nameLabel
 
-				nameLabel.Text = string.format("%s - %s$", name, price)
+				nameLabel.Text = name .. " - " .. price .. "$"
 				print(name, price)
 				selectedTower.Value = name
 			end)
