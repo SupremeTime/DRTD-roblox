@@ -242,21 +242,15 @@ local function PlaceHitSpawn(unitName)
 				setPreviewColor(currentPreview, Color3.fromRGB(255,0,0))
 			end
 
-			local pos = result.Position + Vector3.new(0,1.5,0)
+			local pos = result.Position + Vector3.new(0,currentPreview.Humanoid.HipHeight,0)
 			currentPreview:SetPrimaryPartCFrame(
-				CFrame.new(result.Position + Vector3.new(0,1.5,0))
+				CFrame.new(pos)
 			)
 				
 			local rangeObj = currentPreview:FindFirstChild("Range")
 			if rangeObj then
-				local yOffset =
-				currentPreview.Humanoid.HipHeight +
-				currentPreview.PrimaryPart.Size.Y / 2
-
-				rangeObj.CFrame = (
-				CFrame.new(currentPreview.PrimaryPart.Position + Vector3.new(0,-yOffset,0))
-				* CFrame.Angles(0,0,math.rad(90))
-				)
+				local yOffset = currentPreview.Humanoid.HipHeight + currentPreview.PrimaryPart.Size.Y / 2
+				rangeObj.CFrame = CFrame.new(currentPreview.PrimaryPart.Position + Vector3.new(0,-yOffset,0)) * CFrame.Angles(0,0,math.rad(90))
 			end
 		end
 	end)
