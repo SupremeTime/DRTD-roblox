@@ -1,4 +1,8 @@
-if not _G.DRTD then
+local function load()
   loadstring(game:HttpGet("https://raw.githubusercontent.com/SupremeTime/DRTD-roblox/refs/heads/Super/MainScript.lua"))()
+end
+
+if not _G.DRTD then
+  load()
   _G.DRTD = true
 end
