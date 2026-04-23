@@ -62,7 +62,7 @@ screenGui.IgnoreGuiInset = true
 
 -- Main Frame
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 65, 0, 300)
+frame.Size = UDim2.new(0, 295, 0, 300)
 frame.Position = UDim2.new(0.5, -140, 1.2, 0)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
@@ -106,20 +106,9 @@ title.Text = "Dead Rails TD 1.2.4"
 -- Units
 local global = 35 * 6 
 
-local frame2 = Instance.new("Frame")
-frame2.Size = UDim2.new(0, 240, 0, 230)
-frame2.Position = UDim2.new(0.5, -140, 1.2, 0)
-frame2.AnchorPoint = Vector2.new(0.5, 0.5)
-frame2.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
-frame2.Active = true
-frame2.Draggable = true
-frame2.Visible = true
-frame2.Parent = ScreenGui
-MakeUiCorner(frame2)
-
 local selectorFrame = Instance.new("ScrollingFrame", frame2)
 selectorFrame.Size = UDim2.new(0, 220, 0, global)
-selectorFrame.Position = UDim2.new(0, 10, 0, 10)
+selectorFrame.Position = UDim2.new(0, 65, 0, 80)
 selectorFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 selectorFrame.CanvasSize = UDim2.new(0, 0, 0, 10000)
 selectorFrame.ScrollBarThickness = 0
@@ -203,9 +192,6 @@ buttonsCreate(Instance.new("TextButton", SelectorButtons), {
 	Font = Enum.Font.Gotham,
 	TextSize = 14
 }, function()
-	TweenService:Create(frame2, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-		Position = UDim2.new(0, frame.Position.X.Offset + 75, 0, frame.Position.Y.Offset)
-	}):Play()
 	selectorFrame.Visible = not selectorFrame.Visible
 end)
 
