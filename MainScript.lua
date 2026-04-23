@@ -282,6 +282,7 @@ local function FilterButtons(ParentObj, RarityFilter)
 				GradientClone.Parent = nameLabel
 
 				nameLabel.Text = string.format("%s - %s$", name, price)
+				print(name, price)
 				selectedTower.Value = name
 			end)
 		end
