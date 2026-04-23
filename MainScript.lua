@@ -125,6 +125,40 @@ local function SpawnTower(position, unit)
 	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unit, position, 0)	
 end
 
+local function createRangeCircle(model)
+	if not model or not model.PrimaryPart then return end
+
+	local rangePart = workspace:FindFirstChild("Range")
+	if not rangePart then return end
+
+	local clone = rangePart:Clone()
+	clone.Name = "Range"
+	clone.CanCollide = false
+	clone.CanTouch = false
+	clone.CanQuery = false
+
+	local range = 8
+
+	if DataObj[model.Name] and DataObj[model.Name][1] then
+		range = DataObj[model.Name][1].Range or 8
+	end
+
+	clone.Size = Vector3.new(0.2, range * 2, range * 2)
+
+	local yOffset =
+		model:FindFirstChild("Humanoid") and
+		(model.Humanoid.HipHeight + model.PrimaryPart.Size.Y / 2)
+		or 2
+
+	clone.CFrame =
+		model.PrimaryPart.CFrame *
+		CFrame.new(0, -yOffset, 0) *
+		CFrame.Angles(0, 0, math.rad(90))
+
+	clone.Anchored = false
+	clone.Parent = model
+end
+
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
@@ -165,6 +199,8 @@ local function PlaceHitSpawn(unitName)
 
 	currentPreview = template:Clone()
 	currentPreview.Parent = workspace
+
+	createRangeCircle(currentPreview)
 	previewRotation = 0
 
 	for _, obj in ipairs(currentPreview:GetDescendants()) do
@@ -210,6 +246,15 @@ local function PlaceHitSpawn(unitName)
 			currentPreview:SetPrimaryPartCFrame(
 				CFrame.new(pos) * CFrame.Angles(0, math.rad(previewRotation), 0)
 			)
+				
+			local rangeObj = currentPreview:FindFirstChild("Range")
+			if rangeObj then
+				local yOffset =
+				currentPreview.Humanoid.HipHeight +
+				currentPreview.PrimaryPart.Size.Y / 2
+
+				rangeObj.CFrame = CFrame.new(currentPreview.PrimaryPart.Position + Vector3.new(0,-yOffset,0) * CFrame.Angles(0,0,math.rad(90))
+			end
 		end
 	end)
 
