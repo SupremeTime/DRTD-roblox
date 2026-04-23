@@ -257,16 +257,25 @@ local function PlaceHitSpawn(unitName)
 
 	clickCon = mouse.Button1Down:Connect(function()
 		if currentPreview and validPlacement then
-			local pos = currentPreview.PrimaryPart.CFrame
-			SpawnTower(pos, unitName)
 
-			currentPreview:Destroy()
-			currentPreview = nil
-			placing = false
+			confirm = mouse.Button1Down:Connect(function()
+				if currentPreview and validPlacement	
+					local pos = currentPreview.PrimaryPart.CFrame
+					SpawnTower(pos, unitName)
 
-			moveCon:Disconnect()
-			clickCon:Disconnect()
-			rotateCon:Disconnect()
+					currentPreview:Destroy()
+					currentPreview = nil
+					placing = false
+
+					moveCon:Disconnect()
+					clickCon:Disconnect()
+					rotateCon:Disconnect()
+					confirm:Disconnect()
+				end
+			end)
+		wait(1)
+
+		confirm:Disconnect
 		end
 	end)
 
