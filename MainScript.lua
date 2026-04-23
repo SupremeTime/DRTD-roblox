@@ -253,8 +253,10 @@ local function PlaceHitSpawn(unitName)
 				currentPreview.Humanoid.HipHeight +
 				currentPreview.PrimaryPart.Size.Y / 2
 
+				rangeObj.CFrame = (
 				CFrame.new(currentPreview.PrimaryPart.Position + Vector3.new(0,-yOffset,0))
-					* CFrame.Angles(0,0,math.rad(90))
+				* CFrame.Angles(0,0,math.rad(90))
+				)
 			end
 		end
 	end)
