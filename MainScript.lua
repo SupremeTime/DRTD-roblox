@@ -125,48 +125,123 @@ local function SpawnTower(position, unit)
 	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unit, position, 0)	
 end
 
-local function PlaceHitTower(unitName)
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local currentPreview = nil
+local previewRotation = 0
+local placing = false
+
+local function setPreviewColor(model, color)
+	for _, v in ipairs(model:GetDescendants()) do
+		if v:IsA("BasePart") then
+			v.Color = color
+		end
+	end
+end
+
+local function canPlace(preview, result)
+	if not result or not result.Instance then
+		return false
+	end
+
+	return true
+end
+
+local function PlaceHitSpawn(unitName)
+	if placing then return end
+	placing = true
+
 	if currentPreview then
 		currentPreview:Destroy()
 		currentPreview = nil
 	end
 
-	local template = defendersFolder:FindFirstChild(unitName)
-	if not template then return end
+	local template = ReplicatedStorage.Defenders:FindFirstChild(unitName)
+	if not template then
+		placing = false
+		return
+	end
 
-	local clone = template:Clone()
-	clone.Parent = workspace
-	currentPreview = clone
+	currentPreview = template:Clone()
+	currentPreview.Parent = workspace
+	previewRotation = 0
 
-	for _, obj in ipairs(clone:GetDescendants()) do
+	for _, obj in ipairs(currentPreview:GetDescendants()) do
 		if obj:IsA("BasePart") then
 			obj.CanCollide = false
 			obj.Transparency = 0.35
 		end
 	end
 
-	local con
-	con = game:GetService("RunService").RenderStepped:Connect(function()
+	local validPlacement = false
+	local moveCon
+	local clickCon
+	local rotateCon
+
+	moveCon = RunService.RenderStepped:Connect(function()
 		if not currentPreview or not currentPreview.PrimaryPart then
-			con:Disconnect()
 			return
 		end
 
-		local hit = mouse.Hit
-		if hit then
-			currentPreview:SetPrimaryPartCFrame(hit + Vector3.new(0, 1.5, 0))
+		local cam = workspace.CurrentCamera
+		local mousePos = UserInputService:GetMouseLocation()
+		local ray = cam:ViewportPointToRay(mousePos.X, mousePos.Y)
+
+		local params = RaycastParams.new()
+		params.FilterType = Enum.RaycastFilterType.Exclude
+		params.FilterDescendantsInstances = {
+			currentPreview,
+			localPlayer.Character
+		}
+
+		local result = workspace:Raycast(ray.Origin, ray.Direction * 1000, params)
+
+		if result then
+			validPlacement = canPlace(currentPreview, result)
+
+			if validPlacement then
+				setPreviewColor(currentPreview, Color3.fromRGB(55,255,0))
+			else
+				setPreviewColor(currentPreview, Color3.fromRGB(255,0,0))
+			end
+
+			local pos = result.Position + Vector3.new(0,1.5,0)
+			currentPreview:SetPrimaryPartCFrame(
+				CFrame.new(pos) * CFrame.Angles(0, math.rad(previewRotation), 0)
+			)
 		end
 	end)
 
-	local clickCon
 	clickCon = mouse.Button1Down:Connect(function()
-		if currentPreview then
+		if currentPreview and validPlacement then
 			local pos = currentPreview.PrimaryPart.CFrame
 			SpawnTower(pos, unitName)
+
 			currentPreview:Destroy()
 			currentPreview = nil
+			placing = false
+
+			moveCon:Disconnect()
 			clickCon:Disconnect()
-			con:Disconnect()
+			rotateCon:Disconnect()
+		end
+	end)
+
+	rotateCon = UserInputService.InputBegan:Connect(function(input, gp)
+		if gp then return end
+
+		if input.KeyCode == Enum.KeyCode.R then
+			previewRotation += 45
+		elseif input.KeyCode == Enum.KeyCode.X then
+			if currentPreview then
+				currentPreview:Destroy()
+				currentPreview = nil
+			end
+			placing = false
+			moveCon:Disconnect()
+			clickCon:Disconnect()
+			rotateCon:Disconnect()
 		end
 	end)
 end
@@ -206,7 +281,7 @@ buttonsCreate(Instance.new("TextButton", SelectorButtons), {
 }, function()
 	if not selectedTower.Value then return end
 
-	PlaceHitTower(selectedTower.Value)
+	PlaceHitSpawn(selectedTower.Value)
 end)
 	
 buttonsCreate(Instance.new("TextButton", SelectorButtons), {
