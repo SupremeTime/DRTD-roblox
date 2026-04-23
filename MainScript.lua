@@ -10,6 +10,9 @@ local TweenService = game:GetService("TweenService")
 local selectedTower = Instance.new("StringValue")
 selectedTower.Parent = localPlayer
 
+local currentPreview = nil
+local defendersFolder = ReplicatedStorage:WaitForChild("Defenders")
+
 -- DataBlocks
 local DataObj = require(game.ReplicatedStorage.ModuleLoader.Configs.TowerLevels)
 local ConfigObj = require(game.ReplicatedStorage.ModuleLoader.Configs.TowerConfig)
@@ -204,7 +207,7 @@ buttonsCreate(Instance.new("TextButton", SelectorButtons), {
 	if not selectedTower.Value then return end
 
 	PlaceHitTower(selectedTower.Value)
-end
+end)
 	
 buttonsCreate(Instance.new("TextButton", SelectorButtons), {
 	Size = UDim2.new(0, 90, 0, 20),
