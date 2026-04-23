@@ -244,7 +244,7 @@ local function PlaceHitSpawn(unitName)
 
 			local pos = result.Position + Vector3.new(0,1.5,0)
 			currentPreview:SetPrimaryPartCFrame(
-				CFrame.new(pos) * CFrame.Angles(0, math.rad(previewRotation), 0)
+				CFrame.new(result.Position + Vector3.new(0,1.5,0))
 			)
 				
 			local rangeObj = currentPreview:FindFirstChild("Range")
@@ -253,7 +253,8 @@ local function PlaceHitSpawn(unitName)
 				currentPreview.Humanoid.HipHeight +
 				currentPreview.PrimaryPart.Size.Y / 2
 
-				rangeObj.CFrame = CFrame.new(currentPreview.PrimaryPart.Position + Vector3.new(0,-yOffset,0) * CFrame.Angles(0,0,math.rad(90)))
+				CFrame.new(currentPreview.PrimaryPart.Position + Vector3.new(0,-yOffset,0))
+					* CFrame.Angles(0,0,math.rad(90))
 			end
 		end
 	end)
