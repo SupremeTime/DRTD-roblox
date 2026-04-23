@@ -122,6 +122,52 @@ local function SpawnTower(position, unit)
 	game.ReplicatedStorage.ModuleLoader.Shared.Network.RemoteFunction.SpawnDefender:InvokeServer(unit, position, 0)	
 end
 
+local function PlaceHitTower(unitName)
+	if currentPreview then
+		currentPreview:Destroy()
+		currentPreview = nil
+	end
+
+	local template = defendersFolder:FindFirstChild(unitName)
+	if not template then return end
+
+	local clone = template:Clone()
+	clone.Parent = workspace
+	currentPreview = clone
+
+	for _, obj in ipairs(clone:GetDescendants()) do
+		if obj:IsA("BasePart") then
+			obj.CanCollide = false
+			obj.Transparency = 0.35
+		end
+	end
+
+	local con
+	con = game:GetService("RunService").RenderStepped:Connect(function()
+		if not currentPreview or not currentPreview.PrimaryPart then
+			con:Disconnect()
+			return
+		end
+
+		local hit = mouse.Hit
+		if hit then
+			currentPreview:SetPrimaryPartCFrame(hit + Vector3.new(0, 1.5, 0))
+		end
+	end)
+
+	local clickCon
+	clickCon = mouse.Button1Down:Connect(function()
+		if currentPreview then
+			local pos = currentPreview.PrimaryPart.CFrame
+			SpawnTower(pos, unitName)
+			currentPreview:Destroy()
+			currentPreview = nil
+			clickCon:Disconnect()
+			con:Disconnect()
+		end
+	end)
+end
+
 local SelectorButtons = Instance.new("ScrollingFrame", frame)
 SelectorButtons.Size = UDim2.new(1, -20, 0, 30)
 SelectorButtons.Position = UDim2.new(0, 10, 0, 45)
@@ -157,9 +203,9 @@ buttonsCreate(Instance.new("TextButton", SelectorButtons), {
 }, function()
 	if not selectedTower.Value then return end
 
-	SpawnTower(localPlayer.Character.HumanoidRootPart.CFrame, selectedTower.Value)
-end)
-
+	PlaceHitTower(selectedTower.Value)
+end
+	
 buttonsCreate(Instance.new("TextButton", SelectorButtons), {
 	Size = UDim2.new(0, 90, 0, 20),
 	Position = UDim2.new(0, 100, 0, 5),
