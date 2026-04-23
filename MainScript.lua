@@ -106,9 +106,9 @@ title.Text = "Dead Rails TD 1.2.4"
 -- Units
 local global = 35 * 6 
 
-local selectorFrame = Instance.new("ScrollingFrame", frame2)
-selectorFrame.Size = UDim2.new(0, 220, 0, global)
-selectorFrame.Position = UDim2.new(0, 65, 0, 80)
+local selectorFrame = Instance.new("ScrollingFrame", frame)
+selectorFrame.Size = UDim2.new(0, 220, 0, global - 35)
+selectorFrame.Position = UDim2.new(0, 65, 0, 115)
 selectorFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 selectorFrame.CanvasSize = UDim2.new(0, 0, 0, 10000)
 selectorFrame.ScrollBarThickness = 0
@@ -211,8 +211,8 @@ end)
 
 -- Name Label
 local nameLabel = Instance.new("TextLabel", frame)
-nameLabel.Size = UDim2.new(1, -10, 0, 30)
-nameLabel.Position = UDim2.new(0, 10, 0, 80)
+nameLabel.Size = UDim2.new(1, -75, 0, 30)
+nameLabel.Position = UDim2.new(0, 65, 0, 80)
 nameLabel.Text = "No unit"
 nameLabel.TextSize = 15
 nameLabel.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
@@ -282,7 +282,7 @@ local function FilterButtons(ParentObj, RarityFilter)
 				GradientClone.Parent = nameLabel
 
 				nameLabel.Text = string.format("%s - %s$", name, price)
-				SelectedTower.Value = name
+				selectedTower.Value = name
 			end)
 		end
 	end
